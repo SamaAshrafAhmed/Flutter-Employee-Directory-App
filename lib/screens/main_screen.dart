@@ -1,6 +1,6 @@
 import 'package:employee_directory/models/employee_model.dart';
 import 'package:employee_directory/screens/employees_screen.dart';
-import 'package:employee_directory/services/employee_service.dart';
+import 'package:employee_directory/services/employee_service_dio.dart';
 import 'package:flutter/material.dart';
 
 class MainScreen extends StatelessWidget {
@@ -16,7 +16,7 @@ class MainScreen extends StatelessWidget {
           Center(
             child: TextButton(
               onPressed: () async {
-                List<EmployeeModel> employees = await EmployeeService()
+                List<EmployeeModel> employees = await EmployeeServiceDio()
                     .getEmployees();
                 Navigator.pop(context);
                 Navigator.push(
