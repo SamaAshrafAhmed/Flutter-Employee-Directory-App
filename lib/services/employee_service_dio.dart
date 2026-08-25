@@ -21,7 +21,7 @@ class EmployeeServiceDio {
       for (var json in employeesList) {
         employees.add(EmployeeModel.fromJson(json));
       }
-    } on Exception catch (e) {
+    } on Exception catch (_) {
       rethrow;
     }
     return employees;
@@ -41,7 +41,7 @@ class EmployeeServiceDio {
           employees.add(EmployeeModel.fromJson(json));
         }
       }
-    } on Exception catch (e) {
+    } on Exception catch (_) {
       rethrow;
     }
 
