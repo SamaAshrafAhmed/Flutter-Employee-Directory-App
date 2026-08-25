@@ -1,4 +1,3 @@
-import 'package:employee_directory/models/employee_model.dart';
 import 'package:flutter/material.dart';
 
 class EmployeeInfo extends StatelessWidget {

@@ -10,17 +10,18 @@ class EmployeeServiceDio {
     List<EmployeeModel> employees = [];
     String url = "https://dummy.restapiexample.com/api/v1/employees";
     try {
+      // Fetch the latest employee payload and keep a copy for offline use.
       Response response = await dio.get(url);
       Map<String, dynamic> jsonData = response.data;
       var cachedData = jsonEncode(jsonData);
       final prefs = await SharedPreferences.getInstance();
       prefs.setString("employeesData", cachedData);
+      // Convert each API record into the model used by the employee screens.
       List<dynamic> employeesList = jsonData["data"];
       for (var json in employeesList) {
         employees.add(EmployeeModel.fromJson(json));
       }
     } on Exception catch (e) {
-      print('Error fetching employees: $e');
       rethrow;
     }
     return employees;
@@ -34,14 +35,14 @@ class EmployeeServiceDio {
       if (data == null) {
         employees = await getEmployees();
       } else {
+        // Parse the cached response using the same model conversion as fresh data.
         List<dynamic> employeesList = jsonDecode(data)["data"];
         for (var json in employeesList) {
           employees.add(EmployeeModel.fromJson(json));
         }
-        print("this data is cached");
       }
     } on Exception catch (e) {
-      print('Error fetching employees: $e');
+      rethrow;
     }
 
     return employees;

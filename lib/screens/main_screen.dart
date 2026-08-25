@@ -2,7 +2,6 @@ import 'package:employee_directory/models/employee_model.dart';
 import 'package:employee_directory/screens/employees_screen.dart';
 import 'package:employee_directory/services/employee_service_dio.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class MainScreen extends StatefulWidget {
   new({super.key});
@@ -30,17 +29,35 @@ class _MainScreenState extends State<MainScreen> {
                         isFetching = true;
                       });
 
-                      List<EmployeeModel> employees = await EmployeeServiceDio()
-                          .getEmployeesData();
-                      Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return EmployeesScreen(employees: employees);
-                          },
-                        ),
-                      );
+                      try {
+                        // Load cached or remote data before opening the list screen.
+                        List<EmployeeModel> employees =
+                            await EmployeeServiceDio().getEmployeesData();
+                        if (!context.mounted) return;
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return EmployeesScreen(employees: employees);
+                            },
+                          ),
+                        );
+                      } catch (_) {
+                        if (!context.mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Unable to load employees. Please try again.',
+                            ),
+                          ),
+                        );
+                      } finally {
+                        if (mounted) {
+                          setState(() {
+                            isFetching = false;
+                          });
+                        }
+                      }
                     },
                     child: Text("Get Employees"),
                   ),
